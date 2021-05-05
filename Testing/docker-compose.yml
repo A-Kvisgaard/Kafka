@@ -1,0 +1,22 @@
+# run using "docker-compose up -d"
+version: '3.5'
+services:
+    driver:
+        image: opcua_kafka
+        depends_on:
+            - develco
+        restart: always
+    
+    develco:
+        image: develco_opcua
+        restart: always
+
+    archiver:
+        image: opcua_kafka_test
+        restart: always
+        depends_on:
+            - driver
+        environment:
+            KAFKA_BROKER: stage1.cfei.dk:9092
+            OPCUA-SOURCE: develco:4841
+            TOPIC: 1

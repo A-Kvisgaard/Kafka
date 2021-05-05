@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Confluent.Kafka" Version="1.5.3" />
+    <PackageReference Include="json.NET" Version="1.0.23" />
+    <PackageReference Include="kafka-net" Version="0.9.0.65" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.363.107" />
+  </ItemGroup>
+
+</Project>

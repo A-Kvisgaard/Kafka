@@ -1,0 +1,43 @@
+# run using "docker-compose up -d"
+version: '3.5'
+services:
+
+  develco-opcua:
+    depends_on:
+      - opcua-kafka-service-archiver
+    restart: always
+    image: develco:latest
+    environment:
+      DEVELCO_URL: http://gw-2ab0.sandbox.tek.sdu.dk
+      PORT: 4841
+      DISCOVERY_SERVER_URL: opc.tcp://10.126.132.36:48540
+    expose:
+      - 4841
+
+  opcua-kafka-service-archiver:
+    image: emilkolvigraun/ec-dotnet-core-5.0:latest
+    restart: always
+    environment:
+      W_PORT: 8081
+      W_ADDRESS: 127.0.0.1
+      W_SOURCE: kafka=stage1.cfei.dk:9092=prototype.archive.test
+
+  archiver:
+    image: archiver
+    depends_on:
+      - develco-opcua
+    environment:
+      KAFKA_BROKER: stage1.cfei.dk:9092
+      OPCUA_URL: opc.tcp://develco-opcua:4841
+      DRIVER_INPUT_TOPIC: prototype.archive.test
+      GROUP_ID: some.group.id.test.opcua.driver
+
+  opcua-kafka-service:
+    image: emilkolvigraun/ec-dotnet-core-5.0:latest
+    depends_on:
+      - archiver
+    restart: always
+    environment:
+      W_PORT: 8081
+      W_ADDRESS: 127.0.0.1
+      W_SOURCE: kafka=stage1.cfei.dk:9092=prototype.applications.test
