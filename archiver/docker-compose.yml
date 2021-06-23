@@ -1,0 +1,37 @@
+# run using "docker-compose up -d"
+version: '3.5'
+services:
+
+    lds:
+	image: discovery
+	restart: always
+	environment:
+	    SERVICE_PORT: 48540
+	    DISCOVERY_PORT: 48550
+	    
+    driver:
+        image: opcua_kafka_driver
+        restart: always
+        environment:
+            KAFKA_BROKERS: stage1.cfei.dk:9092
+            INPUT_TOPIC: opcua.quick.test.1
+    
+    develco:
+        image: develco_opcua
+        restart: always
+	environment:
+	    DISCOVERY_SERVER_URL: lds:48540
+	    PORT: 4841
+	    DEVELCO_URL: http://gw-6b77.sandbox.tek.sdu.dk
+
+    archiver:
+        image: archiver
+        depends_on:
+            - driver
+        environment:
+            KAFKA_BROKER: stage1.cfei.dk:9092
+            OPCUA-SOURCE: develco:4841
+            DRIVER_INPUT_TOPIC: opcua.quick.test.1
+            RETURN_TOPIC: WESLEY_RETURN_TOPIC
+            GROUP_ID: some.group.id.test.opcua.driver
+            LDS_URL: lds:48540
