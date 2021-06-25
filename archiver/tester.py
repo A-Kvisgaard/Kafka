@@ -58,7 +58,8 @@ if __name__ == "__main__":
     try:
         client = Client("opc.tcp://tek-matrikon0b.tek.c.sdu.dk:48400/UA/NETxBMSPlatform")
         client.connect()    
-        root_node = client.get_root_node()
+        #root_node = client.get_root_node()
+        root_node = client.get_node("ns=2;s= 0:NETx\XIO\KNX\Spacelync 1sal syd")
         browse_recursive(root_node)
         print(len(nodes))
     finally:
